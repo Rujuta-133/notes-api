@@ -32,3 +32,14 @@ def get_note():
     return {"notes": note_list}
 
 
+@notes_bp.route("/notes/<int:id>", methods=["GET"])
+def get_note_by_id(id): 
+    note_with_id = Note.query.get(id)
+    if note_with_id is None:
+        return {"error" : "Note not found"}
+    
+    return {"id": note_with_id.id, "title": note_with_id.title, "content": note_with_id.content}
+
+
+
+
