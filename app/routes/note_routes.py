@@ -41,5 +41,14 @@ def get_note_by_id(id):
     return {"id": note_with_id.id, "title": note_with_id.title, "content": note_with_id.content}
 
 
+@notes_bp.route("/notes/<int:id>", methods=["DELETE"])
+def delete_note(id):
+    note_with_id = Note.query.get(id)
+    if note_with_id is None:
+        return {"error" : "Note not found"}
+    
+    db.session.delete(note_with_id)
+    db.session.commit()
 
+    return {"response" : "Note deleted"}
 
