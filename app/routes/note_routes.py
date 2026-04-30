@@ -50,5 +50,28 @@ def delete_note(id):
     db.session.delete(note_with_id)
     db.session.commit()
 
-    return {"response" : "Note deleted"}
+    return {"message" : "Note deleted"}
 
+@notes_bp.route("/notes/<int:id>", methods=["PUT"])
+def update_note(id):
+    note_with_id = Note.query.get(id)
+    if note_with_id is None:
+        return {"error" : "Note not found"}
+    
+    note_to_update = request.get_json()
+
+    if not note_to_update:
+        return {"error" : "Invalid request body"}
+
+    title = note_to_update.get("title")
+    content = note_to_update.get("content")
+
+    if title is not None:
+        note_with_id.title =  title
+    
+    if content is not None:
+        note_with_id.content = content
+
+    db.session.commit()
+
+    return {"message" : "Note updated"}
