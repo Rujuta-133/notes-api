@@ -8,9 +8,17 @@ notes_bp = Blueprint("notes", __name__)
 def create_note():
     #get json data
     data = request.get_json()
-
+    if not data:
+        return {"error" : "Invalid request body"}
+    
     title = data.get("title")
     content = data.get("content")
+
+    if not title.strip():
+        return {"error" : "Title not present"}
+    
+    if not content.strip():
+        return {"error" : "Content not present"}
 
     note = Note(title = title, content = content)
 
@@ -66,11 +74,21 @@ def update_note(id):
     title = note_to_update.get("title")
     content = note_to_update.get("content")
 
-    if title is not None:
+    if title is None and content is None:
+        return {"error" : "Title and content required"}
+
+    if title is not None and not title.strip():
+        return {"error" : "Title cannot be empty"}
+    
+    if content is not None and not content.strip():
+        return {"error" : "Content cannot be empty"}
+        
+    if title is not None:    
         note_with_id.title =  title
     
     if content is not None:
         note_with_id.content = content
+
 
     db.session.commit()
 
